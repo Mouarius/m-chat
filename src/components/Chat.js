@@ -8,7 +8,7 @@ const Chat = (props) => {
   const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState([])
 
-  const ENDPOINT = 'http://192.168.1.10:8000'
+  const ENDPOINT = 'https://boiling-temple-64465.herokuapp.com/'
 
   useEffect(() => {
     socket = io(ENDPOINT)
