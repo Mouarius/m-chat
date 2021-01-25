@@ -11,7 +11,7 @@ const Chat = (props) => {
   const ENDPOINT = 'https://boiling-temple-64465.herokuapp.com/'
 
   useEffect(() => {
-    socket = io(ENDPOINT)
+    socket = io()
   }, [ENDPOINT])
 
   useEffect(() => {
