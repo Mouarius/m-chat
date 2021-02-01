@@ -1,39 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { io } from 'socket.io-client'
 import Message from './Message'
-
-let socket
 
 const Chat = (props) => {
   const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState([])
 
-  const ENDPOINT = 'https://boiling-temple-64465.herokuapp.com/'
-
   useEffect(() => {
-    socket = io()
-  }, [ENDPOINT])
-
-  useEffect(() => {
-    socket.on('message', (data) => {
-      setMessages((messages) => [...messages, data])
-    })
-  }, [])
+    if (props.socket) {
+      props.socket.on('message', (data) => {
+        setMessages((messages) => [...messages, data])
+      })
+    }
+  }, [props.socket])
 
   const sendMessage = (event) => {
     event.preventDefault()
-    console.log(inputMessage)
-    socket.emit('send message', { sender: props.user, content: inputMessage })
+    props.socket.emit('send message', {
+      sender: props.user,
+      content: inputMessage,
+    })
     setInputMessage('')
   }
   return (
     <div
       id="chat-window"
-      className="z-0 fixed inset-0 overflow-y-auto font-mono font-light"
+      className={`fixed inset-0 z-0 overflow-y-auto font-mono font-light bg-${props.color}`}
     >
-      {/* <div className="min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"> */}
-      <div className="inline-block bg-white border-m-black border-4 rounded-3xl text-left overflow-hidden sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-        <header className="bg-m-black px-5 py-3">
+      {/* <div className="min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"> */}
+      <div className="inline-block overflow-hidden text-left bg-white border-4 border-m-black rounded-3xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <header className="px-5 py-3 bg-m-black">
           <h1 className="text-2xl font-medium text-white">m_chat_app</h1>
         </header>
         <div className="p-5 bg-white">
@@ -46,7 +41,7 @@ const Chat = (props) => {
             />
           ))}
         </div>
-        <footer className="px-5 py-3 border-m-black border-t-4 ">
+        <footer className="px-5 py-3 border-t-4 border-m-black ">
           <form
             onSubmit={sendMessage}
             id="chat-input"
@@ -55,11 +50,11 @@ const Chat = (props) => {
             <input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              className="bg-m-gray col-span-4 px-2 font-medium"
+              className="col-span-4 px-2 font-medium bg-m-gray"
             ></input>
             <button
               type="submit"
-              className="box-border bg-m-green rounded-full text-white hover:bg-white hover:text-m-green border-2 border-m-green"
+              className={`box-border text-white border-2 rounded-full bg-${props.color} hover:bg-white hover:text-${props.color} border-${props.color}`}
             >
               send
             </button>
