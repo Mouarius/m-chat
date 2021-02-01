@@ -10,6 +10,7 @@ let socket
 
 const App = () => {
   const [username, setUsername] = useState('')
+  const [user, setUser] = useState({})
   const [users, setUsers] = useState([])
   const [color, setColor] = useState('')
   const [loginVisible, setLoginVisible] = useState(true)
@@ -17,8 +18,12 @@ const App = () => {
 
   const handleLogin = async (username) => {
     console.log('login username :>> ', username)
-    socket.emit('login', { username: username })
+    socket.emit('login', { username: username, color: color })
     setLoginVisible(false)
+  }
+  const initializeUsers = async () => {
+    const usersInDb = await usersService.getAll()
+    setUsers((prevUsers) => prevUsers.concat(usersInDb))
   }
 
   useEffect(() => {
@@ -29,13 +34,15 @@ const App = () => {
     socket.on('logged user', (data) => {
       setUsers((prevUsers) => prevUsers.concat(data))
     })
+    socket.on('login success', (data) => {
+      setUser(data)
+    })
+    socket.on('user quit', () => {
+      initializeUsers()
+    })
   }, [])
 
   useEffect(() => {
-    const initializeUsers = async () => {
-      const usersInDb = await usersService.getAll()
-      setUsers((prevUsers) => prevUsers.concat(usersInDb))
-    }
     initializeUsers()
     setColor(appColorCode)
   }, [])
@@ -47,7 +54,7 @@ const App = () => {
         handleLogin={handleLogin}
         color={color}
       />
-      <Chat user={{ username }} color={color} socket={socket} />
+      <Chat user={user} color={color} socket={socket} />
     </div>
   )
 }

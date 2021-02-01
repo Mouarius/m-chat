@@ -1,12 +1,11 @@
 import React from 'react'
 
 const Message = (props) => {
-  const color = props.user === props.sender ? 'm-green' : 'm-black'
-  const messageClassName = `border-2 border-${color} my-2 p-2`
-  const userClassName = `font-medium text-${color}`
+  const messageClassName = `border-2 border-${props.sender.colorTag} my-2 p-2`
+  const userClassName = `font-medium text-${props.sender.colorTag}`
   return (
     <div className={messageClassName}>
-      <h3 className={userClassName}>{props.sender}</h3>
+      <h3 className={userClassName}>{props.sender.username}</h3>
       {props.content}
     </div>
   )

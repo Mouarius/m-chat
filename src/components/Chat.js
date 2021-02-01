@@ -8,7 +8,9 @@ const Chat = (props) => {
   useEffect(() => {
     if (props.socket) {
       props.socket.on('message', (data) => {
-        setMessages((messages) => [...messages, data])
+        console.log('data :>> ', data)
+        setMessages((messages) => messages.concat(data))
+        console.log('messages :>> ', messages)
       })
     }
   }, [props.socket])
