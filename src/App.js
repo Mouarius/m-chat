@@ -9,7 +9,6 @@ import { io } from 'socket.io-client'
 let socket
 
 const App = () => {
-  const [username, setUsername] = useState('')
   const [user, setUser] = useState({})
   const [users, setUsers] = useState([])
   const [color, setColor] = useState('')
@@ -54,7 +53,7 @@ const App = () => {
         handleLogin={handleLogin}
         color={color}
       />
-      <Chat user={user} color={color} socket={socket} />
+      <Chat user={user} color={color} socket={socket} users={users} />
     </div>
   )
 }

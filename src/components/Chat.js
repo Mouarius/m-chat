@@ -17,11 +17,18 @@ const Chat = (props) => {
     if (props.socket) {
       props.socket.on('message', (data) => {
         console.log('data :>> ', data)
+        console.log('props.users :>> ', props.users)
+        const senderObject = props.users.find(
+          (user) => user.id.toString() === data.sender.toString()
+        )
+        console.log('senderObject :>> ', senderObject)
+        const newMessage = { ...data, sender: senderObject }
         setMessages((messages) => messages.concat(data))
         setFeed((elem) => elem.concat({ type: 'message', data: data }))
         console.log('messages :>> ', messages)
       })
       props.socket.on('logged user', (data) => {
+        console.log(data)
         const infoMessage = data.username + ' has logged in.'
         setFeed((elems) => elems.concat({ type: 'info', data: infoMessage }))
       })
@@ -35,7 +42,7 @@ const Chat = (props) => {
   const sendMessage = (event) => {
     event.preventDefault()
     props.socket.emit('send message', {
-      sender: props.user,
+      sender: props.user.id,
       content: inputMessage,
     })
     setInputMessage('')
@@ -60,7 +67,10 @@ const Chat = (props) => {
                 user={props.user}
               />
             ) : (
-              <Info message={element.data} />
+              <Info
+                key={'connected ' + element.data.id}
+                message={element.data}
+              />
             )
           )}
           <div id="end-of-messages" ref={messagesEndRef} />
