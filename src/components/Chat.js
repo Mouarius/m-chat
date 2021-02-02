@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import Info from './Info'
 import Message from './Message'
 
 const Chat = (props) => {
   const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState([])
+
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(() => {
     if (props.socket) {
@@ -14,6 +21,10 @@ const Chat = (props) => {
       })
     }
   }, [props.socket])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const sendMessage = (event) => {
     event.preventDefault()
@@ -33,7 +44,7 @@ const Chat = (props) => {
         <header className="px-5 py-3 bg-m-black">
           <h1 className="text-2xl font-medium text-white">m_chat_app</h1>
         </header>
-        <div className="p-5 bg-white">
+        <div className="p-5 overflow-y-scroll bg-white h-96">
           {messages.map((message) => (
             <Message
               key={message.id}
@@ -42,6 +53,8 @@ const Chat = (props) => {
               user={props.user}
             />
           ))}
+          <Info message="Salut" />
+          <div id="end-of-messages" ref={messagesEndRef} />
         </div>
         <footer className="px-5 py-3 border-t-4 border-m-black ">
           <form
